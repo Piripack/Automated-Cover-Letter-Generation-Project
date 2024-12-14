@@ -1,0 +1,961 @@
+<html><head><base href=".">
+  <title>Data Analysis Portfolio | Andre Ramos</title>
+  <style>
+    :root {
+      --primary: #1a237e;
+      --secondary: #0d47a1;
+      --accent: #2962ff;
+      --text: #ffffff;
+      --bg: #0a0a0a;
+      --card-bg: rgba(13, 71, 161, 0.1);
+    }
+
+    .light-theme {
+      --primary: #1a237e;
+      --secondary: #5c6bc0;
+      --accent: #3949ab;
+      --text: #0a0a0a;
+      --bg: #ffffff;
+      --card-bg: rgba(92, 107, 192, 0.1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      transition: all 0.3s ease;
+      line-height: 1.6;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+      background: 
+        linear-gradient(45deg, var(--bg) 25%, transparent 25%) -40px 0,
+        linear-gradient(-45deg, var(--bg) 25%, transparent 25%) -40px 0,
+        linear-gradient(45deg, transparent 75%, var(--bg) 75%),
+        linear-gradient(-45deg, transparent 75%, var(--bg) 75%);
+      background-size: 80px 80px;
+      opacity: 0.02;
+      animation: backgroundShift 30s linear infinite;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.2; }
+      50% { opacity: 0.7; }
+    }
+
+    .star {
+      position: fixed;
+      width: 2px;
+      height: 2px;
+      background: var(--accent);
+      border-radius: 50%;
+      z-index: -1;
+      opacity: 0.2;
+      pointer-events: none;
+    }
+
+    @keyframes backgroundShift {
+      0% {
+        background-position: 0 0, 0 0, 40px 40px, 40px 40px;
+      }
+      100% {
+        background-position: 80px 80px, 80px 80px, 120px 120px, 120px 120px;
+      }
+    }
+
+    nav {
+      position: fixed;
+      width: 100%;
+      padding: 0.5rem 1.25rem;
+      background: rgba(26, 35, 126, 0.95);
+      backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+      box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+      top: 0;
+      left: 0;
+    }
+
+    nav.nav-hidden {
+      transform: translateY(-100%);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: rgba(255, 255, 255, 0.9);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.3s;
+      position: relative;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+    }
+
+    .nav-links a:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--accent);
+    }
+
+    .nav-links a.active {
+      background: rgba(255, 255, 255, 0.15);
+      color: var(--accent);
+    }
+
+    .nav-links a::after {
+      display: none;
+    }
+
+    .theme-toggle {
+      background: var(--card-bg);
+      border: 2px solid var(--accent);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 1.2rem;
+      padding: 0.5rem 1rem;
+      border-radius: 30px;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      font-weight: 500;
+    }
+
+    .theme-toggle:hover {
+      background: var(--accent);
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    #hero {
+      padding-top: 70px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 4rem 2rem 2rem 2rem;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      position: relative;
+      overflow: hidden;
+    }
+
+    .title {
+      font-size: 3.5rem;
+      margin-bottom: 0.8rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      background: linear-gradient(45deg, #fff, var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: fadeInDown 1s ease-out;
+      position: relative;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .title:hover {
+      transform: scale(1.05);
+    }
+
+    .subtitle {
+      font-size: 1.4rem;
+      font-weight: 500;
+      opacity: 0.9;
+      margin-bottom: 2rem;
+      animation: fadeInUp 1s ease-out 0.3s both;
+      color: rgba(255, 255, 255, 0.95);
+      position: relative;
+    }
+
+    .subtitle::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 50px;
+      height: 3px;
+      background: var(--accent);
+      border-radius: 2px;
+    }
+
+    .hero-about {
+      max-width: 600px;
+      margin: 1.5rem auto 0;
+      padding: 1.5rem;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 24px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transform: translateY(0);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      animation: fadeIn 1s ease-out 0.6s both;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-about::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+      transform: translateX(-100%);
+      transition: transform 0.6s ease;
+    }
+
+    .hero-about:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .hero-about:hover::before {
+      transform: translateX(100%);
+    }
+
+    .hero-about p {
+      font-size: 1.05rem;
+      line-height: 1.75;
+      color: rgba(255, 255, 255, 0.95);
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    @keyframes typing {
+      from { width: 0 }
+      to { width: 100% }
+    }
+
+    section {
+      padding: 3rem 1rem;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    section h2 {
+      font-size: 1.8rem;
+      margin-bottom: 1.25rem;
+      text-align: center;
+    }
+
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.25rem;
+      margin-top: 1.5rem;
+    }
+
+    .skill-card {
+      background: var(--card-bg);
+      padding: 1.25rem;
+      border-radius: 16px;
+      text-align: center;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.1);
+      transition: transform 0.3s;
+    }
+
+    .skill-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .skill-icon {
+      font-size: 2.5rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .projects-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+
+    .project-card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: all 0.3s;
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 0;
+    }
+
+    .project-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+
+    .project-image {
+      width: 100%;
+      height: 220px; /* Fixed height container */
+      position: relative;
+      overflow: hidden;
+      background: var(--card-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .zoom-hint {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(26, 35, 126, 0.9);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 2;
+      pointer-events: none;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(5px);
+    }
+
+    .project-image:hover .zoom-hint {
+      opacity: 1;
+    }
+
+    .project-image a {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .project-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover; /* This ensures the image covers the area without stretching */
+      transition: transform 0.3s ease;
+      max-width: 1200px; /* Maximum width limit */
+      max-height: 800px; /* Maximum height limit */
+      object-position: center; /* Centers the image */
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: crisp-edges;
+    }
+
+    .project-image:hover img {
+      transform: scale(1.05);
+    }
+
+    .project-content {
+      padding: 1.25rem;
+    }
+
+    .project-tech {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin: 1rem 0;
+    }
+
+    .tech-tag {
+      background: var(--accent);
+      color: white;
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    .project-card h3 {
+      margin: 0 0 0.8rem 0;
+      font-size: 1.3rem;
+      color: var(--text);
+    }
+
+    .project-card p {
+      color: var(--text);
+      opacity: 0.9;
+      line-height: 1.5;
+      margin: 0.5rem 0;
+    }
+
+    .chart-container {
+      width: 100%;
+      height: 220px;
+      margin: 1rem 0;
+      overflow: hidden;
+    }
+
+    .data-tool-container {
+      display: none;
+    }
+
+    .data-tool-container.active {
+      display: block;
+    }
+
+    .toggle-container {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding: 2rem;
+      background: var(--card-bg);
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .toggle-container button {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 30px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .toggle-container button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+      background: var(--secondary);
+    }
+
+    .data-tool-container ul li {
+      margin-bottom: 0.5rem;
+      color: var(--text);
+      opacity: 0.9;
+    }
+
+    .data-summary {
+      margin: 1.5rem 0;
+      padding: 1.25rem;
+      background: var(--card-bg);
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .data-summary h3 {
+      margin-bottom: 1rem;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+
+    .summary-item {
+      padding: 1rem;
+      background: rgba(255,255,255,0.05);
+      border-radius: 8px;
+    }
+
+    .contact-form {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      max-width: 450px;
+      margin: 0 auto;
+    }
+
+    .contact-form input,
+    .contact-form textarea {
+      padding: 0.8rem;
+      border: 2px solid var(--card-bg);
+      border-radius: 8px;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .contact-form input:focus,
+    .contact-form textarea:focus {
+      border-color: var(--accent);
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(41, 98, 255, 0.2);
+    }
+
+    .contact-form button {
+      background: var(--accent);
+      color: var(--text);
+      border: none;
+      padding: 1rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .contact-form button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+
+    .data-preview-container {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      background: var(--card-bg);
+      border-radius: 8px;
+      padding: 1rem;
+    }
+
+    .data-preview-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .data-preview-table th,
+    .data-preview-table td {
+      padding: 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .data-preview-table th {
+      background: var(--primary);
+      color: var(--text);
+    }
+
+    .data-preview-controls {
+      display: flex;
+      gap: 1rem;
+      margin: 1rem 0;
+      align-items: center;
+    }
+
+    .data-preview-controls button {
+      background: var(--accent);
+      color: var(--text);
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .data-preview-controls button:hover {
+      transform: translateY(-2px);
+    }
+
+    .data-preview-controls select {
+      padding: 0.5rem;
+      border-radius: 4px;
+      background: var(--bg);
+      color: var(--text);
+      border: 1px solid var(--accent);
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(0) translateX(0);
+      }
+      50% {
+        transform: translateY(-20px) translateX(10px);
+      }
+      100% {
+        transform: translateY(0) translateX(0);
+      }
+    }
+
+    .particle {
+      position: absolute;
+      pointer-events: none;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(5px);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-image {
+      max-width: 90%;
+      max-height: 90vh;
+      object-fit: contain;
+      border-radius: 8px;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .image-zoom {
+      cursor: zoom-in;
+    }
+  </style>
+</head>
+<body class="light-theme">
+  <nav>
+    <div class="nav-links">
+      <a href="#home">Home</a>
+      <a href="#skills">Skills</a>
+      <a href="#projects">Projects</a>
+      <a href="#contact">Contact</a>
+    </div>
+    <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+  </nav>
+
+  <section id="hero">
+    <h1 class="title">Automated Cover Letter Generator</h1>
+    <p class="subtitle">Python-based Document Automation Project</p>
+    <div class="hero-about">
+      <p>An efficient Python-based tool that automates the creation of professional cover letters. This project leverages ReportLab for PDF generation, incorporating automated date insertion, customizable personal and recipient details, and a structured layout with headers, body text, and closing sections. The tool streamlines the job application process by generating consistently formatted, professional cover letters.</p>
+    </div>
+  </section>
+
+  <section id="skills">
+    <h2>Technologies & Features</h2>
+    <div class="skills-grid">
+      <div class="skill-card">
+        <div class="skill-icon">📝</div>
+        <h3>Document Automation</h3>
+        <p>Python, ReportLab Library</p>
+      </div>
+      <div class="skill-card">
+        <div class="skill-icon">🔧</div>
+        <h3>PDF Generation</h3>
+        <p>Custom Styling, Layout Control</p>
+      </div>
+      <div class="skill-card">
+        <div class="skill-icon">⚙️</div>
+        <h3>Customization</h3>
+        <p>Dynamic Content, Templates</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="projects">
+    <h2>Project Components</h2>
+    <div class="projects-container">
+      <div class="project-card">
+        <div class="project-image">
+          <div class="zoom-hint">Click to zoom in</div>
+          <a href="#" class="image-zoom">
+            <img src="cover-letter-code.jpg" alt="Python Code Implementation">
+          </a>
+        </div>
+        <div class="project-content">
+          <h3>Code Implementation</h3>
+          <div class="project-tech">
+            <span class="tech-tag">Python</span>
+            <span class="tech-tag">ReportLab</span>
+          </div>
+          <p>Core Python implementation using ReportLab library for PDF generation with custom styling and layout control.</p>
+        </div>
+      </div>
+      
+      <div class="project-card">
+        <div class="project-image">
+          <div class="zoom-hint">Click to zoom in</div>
+          <a href="#" class="image-zoom">
+            <img src="cover-letter-output.jpg" alt="Generated Cover Letter Example">
+          </a>
+        </div>
+        <div class="project-content">
+          <h3>Output Example</h3>
+          <div class="project-tech">
+            <span class="tech-tag">PDF</span>
+            <span class="tech-tag">Documentation</span>
+          </div>
+          <p>Sample output showing professional formatting, automated date insertion, and customized content placement.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <h2>Project Feedback</h2>
+    <form class="contact-form" onsubmit="handleSubmit(event)">
+      <input type="text" placeholder="Name" required>
+      <input type="email" placeholder="Email" required>
+      <textarea placeholder="Share your thoughts or suggestions about the Cover Letter Generator" rows="5" required></textarea>
+      <button type="submit">Send Feedback</button>
+    </form>
+  </section>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const title = document.querySelector('.title');
+      title.addEventListener('mouseenter', () => {
+        title.style.transform = 'scale(1.05)';
+      });
+      title.addEventListener('mouseleave', () => {
+        title.style.transform = 'scale(1)';
+      });
+
+      const hero = document.querySelector('#hero');
+      for (let i = 0; i < 50; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.cssText = `
+          position: absolute;
+          width: ${Math.random() * 5 + 1}px;
+          height: ${Math.random() * 5 + 1}px;
+          background: rgba(255, 255, 255, ${Math.random() * 0.3 + 0.1});
+          border-radius: 50%;
+          left: ${Math.random() * 100}%;
+          top: ${Math.random() * 100}%;
+          pointer-events: none;
+          animation: float ${Math.random() * 10 + 5}s linear infinite;
+        `;
+        hero.appendChild(particle);
+      }
+
+      // Create modal overlay if it doesn't exist
+      if (!document.querySelector('.modal-overlay')) {
+        const modalOverlay = document.createElement('div');
+        modalOverlay.className = 'modal-overlay';
+        document.body.appendChild(modalOverlay);
+      }
+
+      // Handle image zoom clicks
+      document.querySelectorAll('.image-zoom').forEach(link => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          const img = link.querySelector('img');
+          const modalOverlay = document.querySelector('.modal-overlay');
+          
+          // Clear existing modal content
+          modalOverlay.innerHTML = '';
+          
+          // Create modal image
+          const modalImg = document.createElement('img');
+          modalImg.src = img.src;
+          modalImg.className = 'modal-image';
+          modalOverlay.appendChild(modalImg);
+          
+          // Show modal
+          modalOverlay.classList.add('active');
+          document.body.style.overflow = 'hidden';
+        });
+      });
+
+      // Close modal when clicking outside the image
+      document.querySelector('.modal-overlay').addEventListener('click', (e) => {
+        if (e.target.classList.contains('modal-overlay')) {
+          e.target.classList.remove('active');
+          document.body.style.overflow = '';
+        }
+      });
+
+      // Close modal with escape key
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          const modalOverlay = document.querySelector('.modal-overlay');
+          modalOverlay.classList.remove('active');
+          document.body.style.overflow = '';
+        }
+      });
+    });
+
+    function analyzeData(csvData) {
+      const lines = csvData.split('\n');
+      const headers = lines[0].split(',');
+      const allData = lines.slice(1).map(line => line.split(','));
+      
+      const dataFrame = {
+        head: function(n = 5) {
+          return allData.slice(0, n);
+        },
+        
+        describe: function() {
+          let summary = {};
+          
+          headers.forEach((header, colIndex) => {
+            const column = allData.map(row => row[colIndex]);
+            const nonNullValues = column.filter(val => val !== '' && val !== null && val !== undefined);
+            
+            const numericValues = nonNullValues.map(val => parseFloat(val)).filter(val => !isNaN(val));
+            
+            if (numericValues.length === nonNullValues.length) {
+              summary[header] = {
+                type: 'numeric',
+                count: numericValues.length,
+                mean: numericValues.reduce((a, b) => a + b, 0) / numericValues.length,
+                min: Math.min(...numericValues),
+                max: Math.max(...numericValues),
+                std: calculateStd(numericValues)
+              };
+            } else {
+              summary[header] = {
+                type: 'non-numeric',
+                count: nonNullValues.length,
+              };
+            }
+          });
+          
+          return summary;
+        }
+      };
+      
+      return dataFrame;
+    }
+
+    function calculateStd(array) {
+      const mean = array.reduce((a, b) => a + b, 0) / array.length;
+      const variance = array.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / array.length;
+      return Math.sqrt(variance);
+    }
+
+    function toggleTheme() {
+      document.body.classList.toggle('light-theme');
+      const themeButton = document.querySelector('.theme-toggle');
+      
+      if (document.body.classList.contains('light-theme')) {
+        themeButton.innerHTML = '🌙'; 
+        document.querySelector('nav').style.background = 'rgba(255, 255, 255, 0.95)';
+      } else {
+        themeButton.innerHTML = '☀️'; 
+        document.querySelector('nav').style.background = 'rgba(26, 35, 126, 0.95)';
+      }
+    }
+
+    function toggleDataTool() {
+      const container = document.querySelector('.data-tool-container');
+      container.classList.toggle('active');
+    }
+
+    function clearData() {
+      document.getElementById('csv-upload').value = '';
+      document.getElementById('data-preview').innerHTML = '';
+      document.getElementById('total-rows').textContent = '0';
+      document.getElementById('total-columns').textContent = '0';
+      document.getElementById('file-size').textContent = '0 KB';
+      
+      const ctx = document.getElementById('visualization').getContext('2d');
+      if (window.currentChart) {
+        window.currentChart.destroy();
+      }
+    }
+
+    document.getElementById('csv-upload').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      const reader = new FileReader();
+      
+      reader.onload = function(event) {
+        const csvData = event.target.result;
+        const df = analyzeData(csvData);
+        
+        const lines = csvData.split('\n');
+        const headers = lines[0].split(',');
+        document.getElementById('total-rows').textContent = lines.length - 1;
+        document.getElementById('total-columns').textContent = headers.length;
+        document.getElementById('file-size').textContent = 
+          `${(file.size / 1024).toFixed(2)} KB`;
+        
+        const previewHTML = `
+          <div class="data-preview-controls">
+            <select id="rows-to-show">
+              <option value="5">Show 5 rows</option>
+              <option value="10">Show 10 rows</option>
+              <option value="20">Show 20 rows</option>
+              <option value="50">Show 50 rows</option>
+            </select>
+          </div>
+          <div class="data-preview-container">
+            <table class="data-preview-table">
+              <thead>
+                <tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr>
+              </thead>
+              <tbody id="preview-body">
+                ${df.head().map(row => `
+                  <tr>${row.map(cell => `<td>${cell}</td>`).join('')}</tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        `;
+        
+        document.getElementById('data-preview').innerHTML = previewHTML;
+        
+        document.getElementById('rows-to-show').addEventListener('change', function(e) {
+          const rowCount = parseInt(e.target.value);
+          const tbody = document.getElementById('preview-body');
+          tbody.innerHTML = df.head(rowCount).map(row => `
+            <tr>${row.map(cell => `<td>${cell}</td>`).join('')}</tr>
+          `).join('');
+        });
+      };
+      
+      reader.readAsText(file);
+    });
+
+    function handleSubmit(event) {
+      event.preventDefault();
+      alert('Message sent successfully!');
+      event.target.reset();
+    }
+
+    let lastScrollPosition = 0;
+    const nav = document.querySelector('nav');
+    const scrollThreshold = 100;
+
+    window.addEventListener('scroll', () => {
+      const currentScrollPosition = window.pageYOffset;
+      
+      if (currentScrollPosition > lastScrollPosition && currentScrollPosition > scrollThreshold) {
+        nav.classList.add('nav-hidden');
+      } else {
+        nav.classList.remove('nav-hidden');
+      }
+      
+      lastScrollPosition = currentScrollPosition;
+    });
+
+    document.addEventListener('mousemove', (e) => {
+      if (e.clientY <= 50) { 
+        nav.classList.remove('nav-hidden');
+      }
+    });
+
+    document.querySelectorAll('.nav-links a').forEach(link => {
+      link.addEventListener('click', e => {
+        e.preventDefault();
+        const targetId = link.getAttribute('href');
+        const targetSection = document.querySelector(targetId);
+        targetSection.scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+  </script>
+</body>
+</html>
